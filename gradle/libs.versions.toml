@@ -1,0 +1,50 @@
+[versions]
+# The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
+# https://fabricmc.net/develop/ for fabric
+
+# Base
+minecraft = "26.1.2"
+fabric_loader = "0.19.2"
+
+# Utilities
+pig = "0.3.3"
+jspecify = "1.0.0"
+
+# Libraries
+fabric_api = "0.145.4+26.1.2"
+frappe = "1.0.0-alpha.2"
+fantasy = "0.8.0-beta.1+26.1.1"
+
+# Mod Integrations
+sodium = "0.8.9-beta.4+mc26.1.1"
+
+# Runtime Mods
+modmenu = "18.0.0-alpha.8"
+
+[libraries]
+# Base
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+
+# Utilities
+pig = { module = "io.brachu:pig", version.ref = "pig" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+
+# Libraries
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+frappe = { module = "gay.sylv.frappe:frappe", version.ref = "frappe" }
+frappe_ext_terrain_material = { module = "gay.sylv.frappe:frappe-ext-terrain-material", version.ref = "frappe" }
+fantasy = { module = "xyz.nucleoid:fantasy", version.ref = "fantasy" }
+
+# Mod Integrations
+sodium = { module = "net.caffeinemc:sodium-fabric", version.ref = "sodium" }
+
+# Runtime Mods
+modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
+
+# If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
+[bundles]
+
+[plugins]
+fabric_loom = { id = "net.fabricmc.fabric-loom", version = "1.16-SNAPSHOT" }
+mod-publish = { id = "me.modmuss50.mod-publish-plugin", version = "1.1.+" }

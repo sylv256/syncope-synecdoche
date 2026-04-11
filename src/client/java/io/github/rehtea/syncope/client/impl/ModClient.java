@@ -1,0 +1,261 @@
+package io.github.rehtea.syncope.client.impl;
+
+import java.time.Instant;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.chunk.RenderSectionRegion;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.PalettedContainer;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+
+import gay.sylv.frappe.api.ext.quad_view.FrappeMutableQuadView;
+import gay.sylv.frappe.api.ext.terrain_material.MQV_ExtTerrainMaterial;
+import gay.sylv.frappe.api.ext.terrain_material.TerrainMaterial;
+
+import io.github.rehtea.syncope.client.impl.event.ClientItemScrollEvents;
+import io.github.rehtea.syncope.client.impl.mixin.Accessor_RenderSectionRegion;
+import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
+import io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials;
+import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
+import io.github.rehtea.syncope.impl.attachment.ModAttachments;
+import io.github.rehtea.syncope.impl.item.ModItems;
+import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
+import io.github.rehtea.syncope.impl.network.serverbound.ServerboundFaintPayload;
+import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPaletteMaterialChangePayload;
+import io.github.rehtea.syncope.impl.util.FallibleRunnable;
+import io.github.rehtea.syncope.impl.util.Yeet;
+
+public class ModClient implements ClientModInitializer {
+	public static @Nullable Instant fainted = null;
+	public static boolean faintPause = false;
+	public static boolean faintNoising = false;
+
+	@Override
+	public void onInitializeClient() {
+		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
+		final Map<Block, TerrainMaterial> materialMap = Map.of(
+				Blocks.PRISMARINE, ModTerrainMaterials.DESTABILIZE,
+				Blocks.CARVED_PUMPKIN, ModTerrainMaterials.DISINTEGRATE,
+				Blocks.SPONGE, ModTerrainMaterials.SYNCOPATE,
+				Blocks.GREEN_STAINED_GLASS, ModTerrainMaterials.DESTABILIZE,
+				Blocks.BLUE_STAINED_GLASS, ModTerrainMaterials.DISINTEGRATE,
+				Blocks.RED_STAINED_GLASS, ModTerrainMaterials.SYNCOPATE,
+				Blocks.SCULK, ModTerrainMaterials.SYNCOPATE
+		);
+
+		ModelLoadingPlugin.register(context -> {
+			context.modifyBlockModelAfterBake()
+					.register((model, _) -> new WrapperBlockStateModel(model) {
+						@Override
+						public void emitQuads(
+								QuadEmitter emitter,
+								BlockAndTintGetter level,
+								BlockPos pos,
+								BlockState state,
+								RandomSource random,
+								Predicate<@Nullable Direction> cullTest
+						) {
+							ClientLevel clientLevel = null;
+
+							if (!(level instanceof ClientLevel) && !(level instanceof RenderSectionRegion)) {
+								super.emitQuads(emitter, level, pos, state, random, cullTest);
+								return;
+							}
+
+							if (level instanceof RenderSectionRegion region) {
+								//noinspection resource
+								clientLevel = ((Accessor_RenderSectionRegion) region).syncope_synecdoche$getLevel();
+							}
+
+							LevelChunk chunk = Objects.requireNonNull(clientLevel).getChunkAt(pos);
+							Int2ObjectMap<MaterialPalette> palette = chunk.getAttached(ModAttachments.MATERIAL_PALETTE);
+
+							if (palette == null) {
+								super.emitQuads(emitter, level, pos, state, random, cullTest);
+								return;
+							}
+
+							MaterialPalette palette1 = palette.get(chunk.getSectionIndex(pos.getY()));
+
+							if (palette1 == null) {
+								super.emitQuads(emitter, level, pos, state, random, cullTest);
+								return;
+							}
+
+							PalettedContainer<ModTerrainMaterial> palettedContainer = palette1.palettedContainer();
+							ModTerrainMaterial modTerrainMaterial = palettedContainer.get(
+									pos.getX() & 15,
+									pos.getY() & 15,
+									pos.getZ() & 15
+							);
+
+							if (modTerrainMaterial.equals(ModTerrainMaterial.DEFAULT)) {
+								super.emitQuads(emitter, level, pos, state, random, cullTest);
+								return;
+							}
+
+							TerrainMaterial material = Objects.requireNonNull(ModTerrainMaterials.MATERIAL_MAP.get(modTerrainMaterial.identifier()), "Terrain Material " + modTerrainMaterial.identifier() + " is unregistered on the client");
+
+							emitter.pushTransform(quad -> {
+								FrappeMutableQuadView.of(quad)
+										.as(MQV_ExtTerrainMaterial.class)
+										.frappe$terrainMaterial(material);
+								return true;
+							});
+							super.emitQuads(emitter, level, pos, state, random, cullTest);
+							emitter.popTransform();
+						}
+					});
+		});
+
+		ClientItemScrollEvents.ALLOW.register((inventory, currentSlot, newSlot, xOffset, yOffset) -> {
+			if (inventory.getItem(currentSlot).is(ModItems.PALETTE) && inventory.player.isShiftKeyDown()) {
+				int polarity = (int) Math.signum(yOffset);
+				ModTerrainMaterial terrainMaterialId = inventory.getItem(currentSlot).get(ModTerrainMaterial.TYPE);
+
+				if (terrainMaterialId == null) {
+					terrainMaterialId = ModTerrainMaterial.DEFAULT;
+				}
+
+				Identifier key = terrainMaterialId.identifier();
+				int index = ModTerrainMaterials.IDENTIFIERS.indexOf(key);
+
+				if (index < 0) {
+					index = 0;
+				}
+
+				int newIndex = index + polarity;
+
+				if (newIndex >= ModTerrainMaterials.IDENTIFIERS.size()) {
+					newIndex = 0;
+				}
+
+				if (newIndex < 0) {
+					newIndex = ModTerrainMaterials.IDENTIFIERS.size() - 1;
+				}
+
+				terrainMaterialId = ModTerrainMaterial.REGISTRY.get(ModTerrainMaterials.IDENTIFIERS.get(newIndex)).orElseThrow().value();
+				ClientPlayNetworking.send(new ServerboundPaletteMaterialChangePayload(
+						currentSlot,
+						terrainMaterialId
+				));
+				return false;
+			}
+
+			return true;
+		});
+
+		ModClientNetworking.initialize();
+
+		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+			chunk.onAttachedSet(ModAttachments.MATERIAL_PALETTE)
+					.register((oldValue, newValue) -> {
+						if (newValue != null) {
+							ChunkPos pos = chunk.getPos();
+
+							for (Int2ObjectMap.Entry<MaterialPalette> entry : newValue.int2ObjectEntrySet()) {
+								Minecraft.getInstance().levelRenderer.setSectionDirty(pos.x(), chunk.getSectionYFromSectionIndex(entry.getIntKey()), pos.z());
+							}
+						}
+					});
+		});
+
+		ModKeyMappings.initialize();
+		LevelRenderEvents.END_EXTRACTION.register(_ -> {
+			if (Minecraft.getInstance().player == null || Minecraft.getInstance().level == null) {
+				return;
+			}
+
+			final long millis = 3962;
+
+			if (fainted != null && faintNoising && Instant.now().isAfter(fainted.plusMillis(millis / 2))) {
+				runMc(() -> {
+					faintNoising = false;
+					ClientPlayNetworking.send(ServerboundFaintPayload.INSTANCE);
+				});
+			}
+
+			if (ModKeyMappings.FAINT.isDown()) {
+				if (fainted == null) {
+					fainted = Instant.now();
+					faintPause = true;
+					runMc(() -> {
+						faintNoising = true;
+						Minecraft.getInstance().level.playLocalSound(
+								Minecraft.getInstance().player,
+								SoundEvents.PISTON_EXTEND,
+								SoundSource.NEUTRAL,
+								1.0f,
+								0.4875f
+						);
+					});
+				}
+			} else if (fainted != null && Instant.now().isAfter(fainted.plusMillis(3962))) {
+				faintPause = false;
+				runMc(() ->
+						Minecraft.getInstance().level.playLocalSound(
+							Minecraft.getInstance().player,
+							SoundEvents.PISTON_CONTRACT,
+							SoundSource.NEUTRAL,
+							1.0f,
+							0.4875f
+					));
+				fainted = null;
+			}
+		});
+	}
+
+	public static void runMc(Runnable runnable) {
+		Minecraft.getInstance().execute(runnable);
+	}
+
+	public static void runOnRendering(Runnable runnable) {
+		Minecraft.getInstance().execute(runnable);
+	}
+
+	public static <X extends Throwable> void runOnRenderingFallible(Class<X> clazz, FallibleRunnable<X> runnable) throws X {
+		try {
+			Minecraft.getInstance().execute(() -> {
+				try {
+					runnable.run();
+				} catch (Throwable throwable) {
+					if (clazz.isInstance(throwable)) {
+						throw new Yeet(throwable);
+					} else if (throwable instanceof RuntimeException re) {
+						throw re;
+					} else {
+						throw new RuntimeException(throwable);
+					}
+				}
+			});
+		} catch (Yeet yote) {
+			//noinspection unchecked
+			throw (X) yote.getCause();
+		}
+	}
+}

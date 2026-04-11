@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "syncope-synecdoche",
+	"version": "${version}",
+	"name": "Syncope Synecdoche",
+	"description": "ephemeral ontology",
+	"authors": [
+		"rehteA"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MPL-2.0",
+	"icon": "assets/syncope-synecdoche/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.rehtea.syncope.impl.Mod"
+		],
+		"client": [
+			"io.github.rehtea.syncope.client.impl.ModClient"
+		],
+		"fabric-datagen": [
+			"io.github.rehtea.syncope.client.impl.ModDataGenerator"
+		],
+		"frappe-ext-terrain-material:registry": [
+			"io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials"
+		]
+	},
+	"mixins": [
+		"syncope-synecdoche.mixins.json",
+		{
+			"config": "syncope-synecdoche.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
