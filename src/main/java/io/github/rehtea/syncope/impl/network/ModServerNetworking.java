@@ -4,7 +4,6 @@ import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,7 +26,7 @@ public final class ModServerNetworking {
 			stack.set(ModTerrainMaterial.TYPE, payload.material());
 			context.player().sendOverlayMessage(Component.translatable("syncope-synecdoche.material." + payload.material().identifier().getPath()));
 		});
-		ServerPlayNetworking.registerGlobalReceiver(ServerboundFaintPayload.TYPE, (payload, context) -> {
+		ServerPlayNetworking.registerGlobalReceiver(ServerboundFaintPayload.TYPE, (_, context) -> {
 			ServerPlayer player = context.player();
 
 			if (player.level().equals(context.server().overworld())) {
