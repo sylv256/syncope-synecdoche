@@ -1,7 +1,13 @@
 {
 	"item.syncope-synecdoche.palette": "Palette",
+	"item.syncope-synecdoche.thread": "Thread",
 	"syncope-synecdoche.material.default": "No Material",
 	"syncope-synecdoche.material.destabilize": "Destabilized",
 	"syncope-synecdoche.material.disintegrate": "Disintegrated",
-	"syncope-synecdoche.material.syncopate": "Syncopated"
+	"syncope-synecdoche.material.syncopate": "Syncopated",
+	"syncope-synecdoche.dream_layer.synecdoche": "Synecdoche",
+	"syncope-synecdoche.dream_layer.syncope": "Syncope",
+	"syncope-synecdoche.dream_layer.similitude": "Similitude",
+	"syncope-synecdoche.dream_layer.limbo": "Limbo",
+	"syncope-synecdoche.dream_layer.lucidity": "Lucidity"
 }

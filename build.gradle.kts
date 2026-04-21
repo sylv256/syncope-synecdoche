@@ -1,6 +1,6 @@
 import me.modmuss50.mpp.ReleaseType
-import org.gradle.api.internal.catalog.AbstractExternalDependencyFactory
 import org.gradle.kotlin.dsl.publishMods
+import kotlin.sequences.toCollection
 
 plugins {
 	alias(libs.plugins.fabric.loom)
@@ -67,7 +67,6 @@ dependencies {
 	implementation(libs.fabric.loader)
 
 	// Utilities
-	annotationProcessor(libs.pig)
 	implementation(libs.jspecify)
 
 	// Libraries
@@ -93,6 +92,16 @@ tasks.withType<JavaCompile>().configureEach {
 	options.release = 25
 }
 
+apply(projectDir.resolve("gradle").resolve("package-info.gradle"))
+
+tasks.compileJava {
+	dependsOn(":generatePackageInfos")
+}
+
+tasks.getByName("compileClientJava") {
+	dependsOn(":generateClientPackageInfos")
+}
+
 java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
@@ -101,6 +110,10 @@ java {
 
 	sourceCompatibility = JavaVersion.VERSION_25
 	targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.getByName<Jar>("sourcesJar") {
+	dependsOn(":generatePackageInfos")
 }
 
 tasks.jar {

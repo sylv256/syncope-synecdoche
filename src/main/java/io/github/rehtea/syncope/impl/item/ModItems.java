@@ -14,8 +14,11 @@ import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 
+import io.github.rehtea.syncope.impl.attachment.DreamLayer;
+
 public final class ModItems {
 	public static final Item PALETTE = register("palette", PaletteItem::new, new Item.Properties());
+	public static final Item THREAD = register("thread", ThreadItem::new, new Item.Properties());
 
 	static {
 		CreativeModeTabEvents
@@ -24,6 +27,7 @@ public final class ModItems {
 	}
 
 	public static void initialize() {
+		DreamLayer.initialize();
 	}
 
 	private static <T extends Item> T register(String name, Function<Item.Properties, T> itemFactory, Item.Properties settings) {

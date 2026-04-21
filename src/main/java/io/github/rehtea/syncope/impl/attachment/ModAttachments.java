@@ -20,10 +20,7 @@ public final class ModAttachments {
 			"material_palette",
 			builder -> builder
 					.persistent(Codec.unboundedMap(
-							Codec.STRING.xmap(
-									str -> Integer.parseInt(str),
-									integer -> integer.toString()
-							),
+							Codec.STRING.xmap(Integer::parseInt, Object::toString),
 							MaterialPalette.CODEC
 					).xmap(
 							map -> {
@@ -43,6 +40,13 @@ public final class ModAttachments {
 							),
 							AttachmentSyncPredicate.all()
 					)
+	);
+
+	public static final AttachmentType<DreamLayer> DREAM_LAYER = register(
+			"dream_node",
+			builder -> builder
+					.persistent(DreamLayer.CODEC)
+					.syncWith(DreamLayer.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 	);
 
 	private ModAttachments() {

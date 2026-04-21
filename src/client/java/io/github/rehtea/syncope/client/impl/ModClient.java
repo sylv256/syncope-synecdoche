@@ -1,7 +1,6 @@
 package io.github.rehtea.syncope.client.impl;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -19,8 +18,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.PalettedContainer;
@@ -41,10 +38,13 @@ import io.github.rehtea.syncope.client.impl.event.ClientItemScrollEvents;
 import io.github.rehtea.syncope.client.impl.mixin.Accessor_RenderSectionRegion;
 import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
 import io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials;
+import io.github.rehtea.syncope.impl.DreamLayers;
+import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
 import io.github.rehtea.syncope.impl.item.ModItems;
 import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
+import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundFaintPayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPaletteMaterialChangePayload;
 import io.github.rehtea.syncope.impl.util.FallibleRunnable;
@@ -58,16 +58,6 @@ public class ModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-		final Map<Block, TerrainMaterial> materialMap = Map.of(
-				Blocks.PRISMARINE, ModTerrainMaterials.DESTABILIZE,
-				Blocks.CARVED_PUMPKIN, ModTerrainMaterials.DISINTEGRATE,
-				Blocks.SPONGE, ModTerrainMaterials.SYNCOPATE,
-				Blocks.GREEN_STAINED_GLASS, ModTerrainMaterials.DESTABILIZE,
-				Blocks.BLUE_STAINED_GLASS, ModTerrainMaterials.DISINTEGRATE,
-				Blocks.RED_STAINED_GLASS, ModTerrainMaterials.SYNCOPATE,
-				Blocks.SCULK, ModTerrainMaterials.SYNCOPATE
-		);
-
 		ModelLoadingPlugin.register(context -> {
 			context.modifyBlockModelAfterBake()
 					.register((model, _) -> new WrapperBlockStateModel(model) {
@@ -93,7 +83,7 @@ public class ModClient implements ClientModInitializer {
 							}
 
 							LevelChunk chunk = Objects.requireNonNull(clientLevel).getChunkAt(pos);
-							Int2ObjectMap<MaterialPalette> palette = chunk.getAttached(ModAttachments.MATERIAL_PALETTE);
+							Int2ObjectMap<@Nullable MaterialPalette> palette = chunk.getAttached(ModAttachments.MATERIAL_PALETTE);
 
 							if (palette == null) {
 								super.emitQuads(emitter, level, pos, state, random, cullTest);
@@ -133,7 +123,7 @@ public class ModClient implements ClientModInitializer {
 					});
 		});
 
-		ClientItemScrollEvents.ALLOW.register((inventory, currentSlot, newSlot, xOffset, yOffset) -> {
+		ClientItemScrollEvents.ALLOW.register((inventory, currentSlot, _, _, yOffset) -> {
 			if (inventory.getItem(currentSlot).is(ModItems.PALETTE) && inventory.player.isShiftKeyDown()) {
 				int polarity = (int) Math.signum(yOffset);
 				ModTerrainMaterial terrainMaterialId = inventory.getItem(currentSlot).get(ModTerrainMaterial.TYPE);
@@ -163,6 +153,36 @@ public class ModClient implements ClientModInitializer {
 				ClientPlayNetworking.send(new ServerboundPaletteMaterialChangePayload(
 						currentSlot,
 						terrainMaterialId
+				));
+				return false;
+			} else if (inventory.getItem(currentSlot).is(ModItems.THREAD) && inventory.player.isShiftKeyDown()) {
+				int polarity = (int) Math.signum(yOffset);
+				DreamLayer dreamLayer = inventory.getItem(currentSlot).get(DreamLayer.DATA_COMPONENT_TYPE);
+
+				if (dreamLayer == null) {
+					dreamLayer = DreamLayers.SYNECDOCHE;
+				}
+
+				int index = DreamLayers.PATH.indexOf(dreamLayer);
+
+				if (index < 0) {
+					index = 0;
+				}
+
+				int newIndex = index + polarity;
+
+				if (newIndex >= DreamLayers.PATH.size()) {
+					newIndex = 0;
+				}
+
+				if (newIndex < 0) {
+					newIndex = DreamLayers.PATH.size() - 1;
+				}
+
+				dreamLayer = DreamLayers.PATH.get(newIndex);
+				ClientPlayNetworking.send(new ServerboundDreamLayerChangePayload(
+						currentSlot,
+						dreamLayer
 				));
 				return false;
 			}

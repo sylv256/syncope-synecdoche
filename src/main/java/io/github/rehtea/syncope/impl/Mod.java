@@ -34,6 +34,10 @@ public class Mod implements ModInitializer {
 		ModNetworking.initialize();
 		ServerLifecycleEvents.SERVER_STARTING.register(ModServer::initialize);
 		ServerLifecycleEvents.SERVER_STARTED.register(ModServer::postInitialize);
+		ServerLifecycleEvents.SERVER_STOPPING.register(_ -> {
+			ModServer.HANDLES.clear();
+			ModServer.CONFIGS.clear();
+		});
 	}
 
 	public static Identifier id(String path) {
