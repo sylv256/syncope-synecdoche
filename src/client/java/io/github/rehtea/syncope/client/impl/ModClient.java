@@ -2,6 +2,8 @@ package io.github.rehtea.syncope.client.impl;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -16,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,6 +57,34 @@ public class ModClient implements ClientModInitializer {
 	public static @Nullable Instant fainted = null;
 	public static boolean faintPause = false;
 	public static boolean faintNoising = false;
+
+	public static int getAlpha() {
+		if (fainted == null) {
+			return 0;
+		}
+
+		return Math.min((int) (getMillis() * getMillis() / 255), 255);
+	}
+
+	public static float getInverse() {
+		return 0.8f * (getAlpha() / 127.0f);
+	}
+
+	public static long getMillis() {
+		return Objects.requireNonNull(fainted).until(Instant.now()).toMillis();
+	}
+
+	public static OptionalInt getColor(int alpha) {
+		return OptionalInt.empty();
+	}
+
+	private static int getColored(int alpha) {
+		return ARGB.color(0, alpha / 12, 0, 0);
+	}
+
+	public static OptionalDouble getDepth() {
+		return OptionalDouble.empty();
+	}
 
 	@Override
 	public void onInitializeClient() {

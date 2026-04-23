@@ -6,7 +6,9 @@
 		"ExampleClientMixin",
 		"MouseHandlerMixin",
 		"Accessor_RenderSectionRegion",
-		"Mixin_Minecraft"
+		"Accessor_GameRenderer",
+		"Mixin_Minecraft",
+		"Mixin_PostPass"
 	],
 	"injectors": {
 		"defaultRequire": 1
