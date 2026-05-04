@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
@@ -33,6 +34,7 @@ public class Mod implements ModInitializer {
 		ModAttachments.initialize();
 		ModTerrainMaterial.initialize();
 		ModNetworking.initialize();
+		ModCommands.initialize();
 		ServerLifecycleEvents.SERVER_STARTING.register(ModServer::initialize);
 		ServerLifecycleEvents.SERVER_STARTED.register(ModServer::postInitialize);
 		ServerLifecycleEvents.SERVER_STOPPING.register(_ -> {

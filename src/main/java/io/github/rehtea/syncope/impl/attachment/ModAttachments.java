@@ -49,6 +49,13 @@ public final class ModAttachments {
 					.syncWith(DreamLayer.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 	);
 
+	public static final AttachmentType<MusicStage> MUSIC_STAGE = register(
+			"music_stage",
+			builder -> builder
+					.persistent(MusicStage.CODEC)
+					.syncWith(MusicStage.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+	);
+
 	private ModAttachments() {
 	}
 

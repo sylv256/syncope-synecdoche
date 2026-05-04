@@ -1,0 +1,50 @@
+{
+	"syncope-synecdoche.music.as_is_and_as_was_before.mono": {
+		"sounds": [
+			{
+				"name": "music/as_is_and_as_was_before_mono",
+				"stream": true
+			}
+		]
+	},
+	"syncope-synecdoche.music.as_is_and_as_was_before.stereo": {
+		"sounds": [
+			{
+				"name": "music/as_is_and_as_was_before_stereo",
+				"stream": true
+			}
+		]
+	},
+	"syncope-synecdoche.music.as_is_and_as_was_before.stereo.loop": {
+		"sounds": [
+			{
+				"name": "music/as_is_and_as_was_before_stereo_loop",
+				"stream": true
+			}
+		]
+	},
+	"syncope-synecdoche.music.horizontal_hourglass.stereo.loop": {
+		"sounds": [
+			{
+				"name": "music/horizontal_hourglass_stereo_loop",
+				"stream": true
+			}
+		]
+	},
+	"syncope-synecdoche.music.horizontal_hourglass.stereo": {
+		"sounds": [
+			{
+				"name": "music/horizontal_hourglass_stereo",
+				"stream": true
+			}
+		]
+	},
+	"syncope-synecdoche.music.horizontal_hourglass.mono": {
+		"sounds": [
+			{
+				"name": "music/horizontal_hourglass_mono",
+				"stream": true
+			}
+		]
+	}
+}

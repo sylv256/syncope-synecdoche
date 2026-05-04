@@ -13,9 +13,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.chunk.RenderSectionRegion;
+import net.minecraft.client.sounds.MusicManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ARGB;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.chunk.PalettedContainer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -45,6 +48,7 @@ import io.github.rehtea.syncope.impl.DreamLayers;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
+import io.github.rehtea.syncope.impl.attachment.MusicStage;
 import io.github.rehtea.syncope.impl.item.ModItems;
 import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
@@ -57,6 +61,7 @@ public class ModClient implements ClientModInitializer {
 	public static @Nullable Instant fainted = null;
 	public static boolean faintPause = false;
 	public static boolean faintNoising = false;
+	public static @Nullable Instant playDistance = null;
 
 	public static int getAlpha() {
 		if (fainted == null) {
@@ -277,6 +282,25 @@ public class ModClient implements ClientModInitializer {
 							0.4875f
 					));
 				fainted = null;
+			}
+		});
+
+		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			if (client.player == null) return;
+			if (!client.player.hasAttached(ModAttachments.MUSIC_STAGE)) return;
+			MusicManager manager = client.getMusicManager();
+			MusicStage attached = client.player.getAttached(ModAttachments.MUSIC_STAGE);
+			Music music = ModMusics.STAGE_2_MUSIC.get(attached);
+			boolean notPlayingCurrent = !manager.isPlayingMusic(music);
+			if (attached != null && notPlayingCurrent && manager.getCurrentMusicTranslationKey() == null) {
+				if (playDistance == null && !attached.loop) {
+					playDistance = Instant.now().plusSeconds(160);
+				}
+
+				if (playDistance == null || Instant.now().isAfter(playDistance)) {
+					playDistance = null;
+					manager.startPlaying(music);
+				}
 			}
 		});
 	}
