@@ -287,7 +287,7 @@ public class ModClient implements ClientModInitializer {
 			Vec3 location = client.player.raycastHitResult(client.missTime, client.getCameraEntity()).getLocation();
 			BlockPos blockPos = new BlockPos((int) location.x, (int) location.y, (int) location.z);
 			if (client.level.getBlockState(blockPos).is(ModBlocks.DESYNCOPATOR.block()) || client.level.getBlockState(blockPos).is(ModBlocks.INVERTED_DESYNCOPATOR.block())) {
-				ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos));
+				ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos.north()));
 			}
 		});
 
