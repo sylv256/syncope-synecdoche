@@ -28,6 +28,7 @@ public class Mod implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+		ModBlocks.initialize();
 		ModItems.initialize();
 		ModAttachments.initialize();
 		ModTerrainMaterial.initialize();

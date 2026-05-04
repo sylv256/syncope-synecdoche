@@ -1,4 +1,8 @@
 {
+	"block.syncope-synecdoche.inverted_syncopator": "Inverted Syncopator",
+	"block.syncope-synecdoche.syncopator": "Syncopator",
+	"block.syncope-synecdoche.inverted_desyncopator": "Inverted De-Syncopator",
+	"block.syncope-synecdoche.desyncopator": "De-Syncopator",
 	"item.syncope-synecdoche.palette": "Palette",
 	"item.syncope-synecdoche.thread": "Thread",
 	"syncope-synecdoche.material.default": "No Material",

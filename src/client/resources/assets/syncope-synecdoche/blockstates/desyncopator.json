@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "syncope-synecdoche:block/desyncopator"
+		}
+	}
+}
