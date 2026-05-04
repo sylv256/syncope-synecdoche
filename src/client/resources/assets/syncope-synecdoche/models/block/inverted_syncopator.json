@@ -1,5 +1,5 @@
 {
-	"parent": "minecraft:block/cube_all",
+	"parent": "syncope-synecdoche:block/cube_all_unshaded",
 	"textures": {
 		"all": "syncope-synecdoche:block/inverted_syncopator"
 	}
