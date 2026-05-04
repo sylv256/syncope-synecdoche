@@ -47,6 +47,7 @@ import io.github.rehtea.syncope.client.impl.mixin.Accessor_RenderSectionRegion;
 import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
 import io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials;
 import io.github.rehtea.syncope.impl.DreamLayers;
+import io.github.rehtea.syncope.impl.ModBlocks;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
@@ -285,7 +286,7 @@ public class ModClient implements ClientModInitializer {
 
 			Vec3 location = client.player.raycastHitResult(client.missTime, client.getCameraEntity()).getLocation();
 			BlockPos blockPos = new BlockPos((int) location.x, (int) location.y, (int) location.z);
-			if (!client.level.getBlockState(blockPos).is(Blocks.AIR)) {
+			if (client.level.getBlockState(blockPos).is(ModBlocks.DESYNCOPATOR.block()) || client.level.getBlockState(blockPos).is(ModBlocks.INVERTED_DESYNCOPATOR.block())) {
 				ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos));
 			}
 		});
