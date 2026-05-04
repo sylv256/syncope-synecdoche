@@ -22,12 +22,13 @@ public final class ModCommands {
 	public static void initialize() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, _, _) -> {
 			dispatcher.register(Commands.literal(MOD_ID + ":music_stage").executes(context -> {
+				ServerPlayer player = context.getArgument("player", ServerPlayer.class);
 				String id = context.getArgument("music_stage", String.class).toLowerCase(Locale.ROOT);
 
 				for (MusicStage stage : MusicStage.values()) {
 					if (!stage.name().toLowerCase(Locale.ROOT).equals(id)) continue;
 
-					context.getSource().getPlayer().setAttached(ModAttachments.MUSIC_STAGE, stage);
+					player.setAttached(ModAttachments.MUSIC_STAGE, stage);
 
 					return 0;
 				}
@@ -36,12 +37,13 @@ public final class ModCommands {
 			}));
 
 			dispatcher.register(Commands.literal(MOD_ID + ":dream_layer").executes(context -> {
+				ServerPlayer player = context.getArgument("player", ServerPlayer.class);
 				String id = context.getArgument("dream_layer", String.class).toLowerCase(Locale.ROOT);
 
 				for (DreamLayer layer : DreamLayers.PATH) {
 					if (!layer.identifier().getPath().equals(id)) continue;
 
-					context.getSource().getPlayer().setAttached(ModAttachments.DREAM_LAYER, layer);
+					player.setAttached(ModAttachments.DREAM_LAYER, layer);
 
 					return 0;
 				}
