@@ -23,9 +23,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -54,6 +56,7 @@ import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundFaintPayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPaletteMaterialChangePayload;
+import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPulsePayload;
 import io.github.rehtea.syncope.impl.util.FallibleRunnable;
 import io.github.rehtea.syncope.impl.util.Yeet;
 
@@ -261,10 +264,10 @@ public class ModClient implements ClientModInitializer {
 					fainted = Instant.now();
 					faintPause = true;
 					runMc(() -> {
-						faintNoising = true;
+							faintNoising = true;
 						Minecraft.getInstance().level.playLocalSound(
 								Minecraft.getInstance().player,
-								SoundEvents.PISTON_EXTEND,
+								SoundEvents.CREEPER_DEATH,
 								SoundSource.NEUTRAL,
 								1.0f,
 								0.4875f
@@ -273,15 +276,17 @@ public class ModClient implements ClientModInitializer {
 				}
 			} else if (fainted != null && Instant.now().isAfter(fainted.plusMillis(3962))) {
 				faintPause = false;
-				runMc(() ->
-						Minecraft.getInstance().level.playLocalSound(
-							Minecraft.getInstance().player,
-							SoundEvents.PISTON_CONTRACT,
-							SoundSource.NEUTRAL,
-							1.0f,
-							0.4875f
-					));
 				fainted = null;
+			}
+		});
+
+		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			if (client.player == null || client.level == null) return;
+
+			Vec3 location = client.player.raycastHitResult(client.missTime, client.getCameraEntity()).getLocation();
+			BlockPos blockPos = new BlockPos((int) location.x, (int) location.y, (int) location.z);
+			if (!client.level.getBlockState(blockPos).is(Blocks.AIR)) {
+				ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos));
 			}
 		});
 

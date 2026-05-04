@@ -4,10 +4,18 @@ import java.util.Set;
 
 import xyz.nucleoid.fantasy.RuntimeLevelHandle;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.RepeaterBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
@@ -18,6 +26,7 @@ import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundFaintPayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPaletteMaterialChangePayload;
+import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPulsePayload;
 
 public final class ModServerNetworking {
 	private ModServerNetworking() {
@@ -112,6 +121,20 @@ public final class ModServerNetworking {
 							player.getXRot(),
 							false
 					);
+				}
+			}
+		});
+		ServerPlayNetworking.registerGlobalReceiver(ServerboundPulsePayload.TYPE, (payload, context) -> {
+			ServerPlayer player = context.player();
+			ServerLevel level = player.level();
+
+			BlockState state = level.getBlockState(payload.pos());
+			BlockHitResult hitResult = new BlockHitResult(player.position(), Direction.NORTH, payload.pos(), false);
+			InteractionResult interactionResult = state.useWithoutItem(level, player, hitResult);
+			if (!interactionResult.consumesAction()) {
+				if (interactionResult != InteractionResult.PASS) {
+					UseOnContext useOnContext = new UseOnContext(player, player.getUsedItemHand(), hitResult);
+					player.getItemInHand(player.getUsedItemHand()).useOn(useOnContext);
 				}
 			}
 		});

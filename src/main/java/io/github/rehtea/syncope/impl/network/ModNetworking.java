@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundFaintPayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPaletteMaterialChangePayload;
+import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPulsePayload;
 
 public final class ModNetworking {
 	private ModNetworking() {
@@ -22,6 +23,10 @@ public final class ModNetworking {
 		PayloadTypeRegistry.serverboundPlay().register(
 				ServerboundFaintPayload.TYPE,
 				ServerboundFaintPayload.CODEC
+		);
+		PayloadTypeRegistry.serverboundPlay().register(
+				ServerboundPulsePayload.TYPE,
+				ServerboundPulsePayload.CODEC
 		);
 		ModServerNetworking.initialize();
 	}
