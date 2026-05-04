@@ -261,20 +261,7 @@ public class ModClient implements ClientModInitializer {
 			}
 
 			if (ModKeyMappings.FAINT.isDown()) {
-				if (fainted == null) {
-					fainted = Instant.now();
-					faintPause = true;
-					runMc(() -> {
-							faintNoising = true;
-						Minecraft.getInstance().level.playLocalSound(
-								Minecraft.getInstance().player,
-								SoundEvents.CREEPER_DEATH,
-								SoundSource.NEUTRAL,
-								1.0f,
-								0.4875f
-						);
-					});
-				}
+				faint();
 			} else if (fainted != null && Instant.now().isAfter(fainted.plusMillis(3962))) {
 				faintPause = false;
 				fainted = null;
@@ -309,6 +296,25 @@ public class ModClient implements ClientModInitializer {
 				}
 			}
 		});
+
+		ModClientNetworking.initialize();
+	}
+
+	public static void faint() {
+		if (fainted == null) {
+			fainted = Instant.now();
+			faintPause = true;
+			runMc(() -> {
+				faintNoising = true;
+				Minecraft.getInstance().level.playLocalSound(
+						Minecraft.getInstance().player,
+						SoundEvents.CREEPER_DEATH,
+						SoundSource.NEUTRAL,
+						1.0f,
+						0.4875f
+				);
+			});
+		}
 	}
 
 	public static void runMc(Runnable runnable) {

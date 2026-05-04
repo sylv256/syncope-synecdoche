@@ -5,12 +5,15 @@ import static io.github.rehtea.syncope.impl.Mod.MOD_ID;
 import java.util.Locale;
 
 import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
 import io.github.rehtea.syncope.impl.attachment.MusicStage;
+import io.github.rehtea.syncope.impl.network.clientbound.ClientboundForceFaintPayload;
 
 public final class ModCommands {
 	private ModCommands() {
@@ -44,6 +47,12 @@ public final class ModCommands {
 				}
 
 				return 67;
+			}));
+
+			dispatcher.register(Commands.literal(MOD_ID + ":force_faint").executes(context -> {
+				ServerPlayer player = context.getArgument("player", ServerPlayer.class);
+				ServerPlayNetworking.send(player, ClientboundForceFaintPayload.INSTANCE);
+				return 0;
 			}));
 		});
 	}
