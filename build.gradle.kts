@@ -1,6 +1,5 @@
 import me.modmuss50.mpp.ReleaseType
 import org.gradle.kotlin.dsl.publishMods
-import kotlin.sequences.toCollection
 
 plugins {
 	alias(libs.plugins.fabric.loom)
@@ -71,7 +70,8 @@ dependencies {
 
 	// Libraries
 	implementation(libs.fabric.api)
-	apiInclude(libs.frappe.ext.terrain.material)
+	api(libs.frappe.ext.terrain.material)
+	include(libs.frappe.asProvider())
 	runtimeOnly(libs.frappe.asProvider())
 	implementationInclude(libs.fantasy)
 
