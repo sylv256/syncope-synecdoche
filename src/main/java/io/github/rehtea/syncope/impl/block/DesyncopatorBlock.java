@@ -92,14 +92,4 @@ public class DesyncopatorBlock extends Block {
 	) {
 		return state.getValue(POWERED) ? 15 : 0;
 	}
-
-	@Override
-	protected int getDirectSignal(
-			BlockState state,
-			BlockGetter level,
-			BlockPos pos,
-			Direction direction
-	) {
-		return super.getDirectSignal(state, level, pos, direction);
-	}
 }
