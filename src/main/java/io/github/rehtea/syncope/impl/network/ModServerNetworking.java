@@ -131,6 +131,7 @@ public final class ModServerNetworking {
 			BlockState state = level.getBlockState(payload.pos());
 			BlockHitResult hitResult = new BlockHitResult(player.position(), Direction.NORTH, payload.pos(), false);
 			InteractionResult interactionResult = state.useWithoutItem(level, player, hitResult);
+
 			if (!interactionResult.consumesAction()) {
 				if (interactionResult != InteractionResult.PASS) {
 					UseOnContext useOnContext = new UseOnContext(player, player.getUsedItemHand(), hitResult);

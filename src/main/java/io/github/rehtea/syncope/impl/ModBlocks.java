@@ -11,6 +11,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PoweredBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
@@ -19,6 +20,7 @@ public final class ModBlocks {
 			"syncopator",
 			Block::new,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+					.mapColor(MapColor.COLOR_BLACK)
 					.lightLevel(_ -> 15),
 			true
 	);
@@ -32,7 +34,7 @@ public final class ModBlocks {
 	);
 	public static final BlockWithItem DESYNCOPATOR = register(
 			"desyncopator",
-			Block::new,
+			PoweredBlock::new,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
 					.mapColor(MapColor.COLOR_BLACK)
 					.lightLevel(_ -> 15),
@@ -40,7 +42,7 @@ public final class ModBlocks {
 	);
 	public static final BlockWithItem INVERTED_DESYNCOPATOR = register(
 			"inverted_desyncopator",
-			Block::new,
+			PoweredBlock::new,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
 					.mapColor(MapColor.COLOR_LIGHT_GRAY)
 					.lightLevel(_ -> 15),

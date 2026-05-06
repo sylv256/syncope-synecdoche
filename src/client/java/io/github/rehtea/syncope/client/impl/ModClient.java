@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -66,6 +68,7 @@ public class ModClient implements ClientModInitializer {
 	public static boolean faintPause = false;
 	public static boolean faintNoising = false;
 	public static @Nullable Instant playDistance = null;
+	public static Instant desyncopationDistance = Instant.now();
 
 	public static int getAlpha() {
 		if (fainted == null) {
@@ -270,11 +273,19 @@ public class ModClient implements ClientModInitializer {
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (client.player == null || client.level == null) return;
+			if (Instant.now().isBefore(desyncopationDistance.plusMillis(500))) return;
+			desyncopationDistance = Instant.now();
 
-			Vec3 location = client.player.raycastHitResult(client.missTime, client.getCameraEntity()).getLocation();
-			BlockPos blockPos = new BlockPos((int) location.x, (int) location.y, (int) location.z);
-			if (client.level.getBlockState(blockPos).is(ModBlocks.DESYNCOPATOR.block()) || client.level.getBlockState(blockPos).is(ModBlocks.INVERTED_DESYNCOPATOR.block())) {
-				ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos.north()));
+			HitResult hitResult = Objects.requireNonNull(client.getCameraEntity())
+					.pick(20.0, 0.0F, false);
+
+			if (hitResult.getType() == HitResult.Type.BLOCK) {
+				BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+				BlockPos blockPos = blockHitResult.getBlockPos();
+
+				if (client.level.getBlockState(blockPos).is(ModBlocks.DESYNCOPATOR.block()) || client.level.getBlockState(blockPos).is(ModBlocks.INVERTED_DESYNCOPATOR.block())) {
+					ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos));
+				}
 			}
 		});
 
