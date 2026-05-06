@@ -261,11 +261,11 @@ public class ModClient implements ClientModInitializer {
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (client.player == null || client.level == null) return;
-			if (Instant.now().isBefore(desyncopationDistance.plusMillis(500))) return;
+			if (Instant.now().isBefore(desyncopationDistance.plusMillis(125))) return;
 			desyncopationDistance = Instant.now();
 
 			HitResult hitResult = Objects.requireNonNull(client.getCameraEntity())
-					.pick(20.0, 0.0F, false);
+					.pick(48.0, 0.0F, false);
 
 			if (hitResult.getType() == HitResult.Type.BLOCK) {
 				BlockHitResult blockHitResult = (BlockHitResult) hitResult;

@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 public class DesyncopatorBlock extends Block {
-	public static final int MAX_STRENGTH = 8;
+	public static final int MAX_STRENGTH = 4;
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final IntegerProperty STRENGTH = IntegerProperty.create("strength", 0, MAX_STRENGTH);
 
