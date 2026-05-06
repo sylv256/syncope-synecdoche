@@ -3,12 +3,13 @@
 	"package": "io.github.rehtea.syncope.client.impl.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin",
-		"MouseHandlerMixin",
-		"Accessor_RenderSectionRegion",
 		"Accessor_GameRenderer",
+		"Accessor_RenderSectionRegion",
+		"ExampleClientMixin",
 		"Mixin_Minecraft",
-		"Mixin_PostPass"
+		"Mixin_PostPass",
+		"MouseHandlerMixin",
+		"Mixin_PostChain"
 	],
 	"injectors": {
 		"defaultRequire": 1

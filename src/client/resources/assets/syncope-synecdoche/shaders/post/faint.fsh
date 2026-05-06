@@ -22,6 +22,5 @@ void main(){
     vec4 diffuseColor = texture(InSampler, texCoord);
     vec4 invertColor = 1.0 - diffuseColor;
     vec4 outColor = mix(diffuseColor, invertColor, InverseAmount);
-	float fade = 1.0 - FadeAmount;
-    fragColor = vec4(outColor.rgb, 1.0) * fade;
+    fragColor = vec4(outColor.rgb, 1.0);
 }

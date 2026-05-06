@@ -2,10 +2,10 @@ package io.github.rehtea.syncope.client.impl;
 
 import java.time.Instant;
 import java.util.Objects;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 import java.util.function.Predicate;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jspecify.annotations.Nullable;
 
@@ -20,7 +20,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,6 +30,7 @@ import net.minecraft.world.phys.HitResult;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
@@ -48,7 +48,6 @@ import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
 import io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials;
 import io.github.rehtea.syncope.impl.DreamLayers;
 import io.github.rehtea.syncope.impl.block.DesyncopatorBlock;
-import io.github.rehtea.syncope.impl.block.ModBlocks;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
@@ -68,13 +67,15 @@ public class ModClient implements ClientModInitializer {
 	public static boolean faintNoising = false;
 	public static @Nullable Instant playDistance = null;
 	public static Instant desyncopationDistance = Instant.now();
+	public static final ScopedValue<RenderTarget> SYNCOPE_RENDER_TARGET = ScopedValue.newInstance();
+	public static @Nullable RenderTarget renderTarget;
 
 	public static int getAlpha() {
 		if (fainted == null) {
 			return 0;
 		}
 
-		return Math.min((int) (getMillis() * getMillis() / 255), 255);
+		return Math.min((int) ((getMillis() / 16) * (getMillis() / 128)), 255);
 	}
 
 	public static float getInverse() {
@@ -83,18 +84,6 @@ public class ModClient implements ClientModInitializer {
 
 	public static long getMillis() {
 		return Objects.requireNonNull(fainted).until(Instant.now()).toMillis();
-	}
-
-	public static OptionalInt getColor(int alpha) {
-		return OptionalInt.empty();
-	}
-
-	private static int getColored(int alpha) {
-		return ARGB.color(0, alpha / 12, 0, 0);
-	}
-
-	public static OptionalDouble getDepth() {
-		return OptionalDouble.empty();
 	}
 
 	@Override
@@ -311,6 +300,11 @@ public class ModClient implements ClientModInitializer {
 					manager.startPlaying(music);
 				}
 			}
+		});
+
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+			RenderTarget mainRenderTarget = client.getMainRenderTarget();
+			renderTarget = new TextureTarget("Syncope Target", mainRenderTarget.width, mainRenderTarget.height, mainRenderTarget.useDepth);
 		});
 
 		ModClientNetworking.initialize();
