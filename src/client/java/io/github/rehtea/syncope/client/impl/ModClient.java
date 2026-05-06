@@ -47,11 +47,11 @@ import io.github.rehtea.syncope.client.impl.mixin.Accessor_RenderSectionRegion;
 import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
 import io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials;
 import io.github.rehtea.syncope.impl.DreamLayers;
-import io.github.rehtea.syncope.impl.block.DesyncopatorBlock;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
 import io.github.rehtea.syncope.impl.attachment.MusicStage;
+import io.github.rehtea.syncope.impl.block.DesyncopatorBlock;
 import io.github.rehtea.syncope.impl.item.ModItems;
 import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
@@ -290,6 +290,7 @@ public class ModClient implements ClientModInitializer {
 			MusicStage attached = client.player.getAttached(ModAttachments.MUSIC_STAGE);
 			Music music = ModMusics.STAGE_2_MUSIC.get(attached);
 			boolean notPlayingCurrent = !manager.isPlayingMusic(music);
+
 			if (attached != null && notPlayingCurrent && manager.getCurrentMusicTranslationKey() == null) {
 				if (playDistance == null && !attached.loop) {
 					playDistance = Instant.now().plusSeconds(160);
