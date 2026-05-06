@@ -23,13 +23,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -49,7 +47,8 @@ import io.github.rehtea.syncope.client.impl.mixin.Accessor_RenderSectionRegion;
 import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
 import io.github.rehtea.syncope.client.impl.render.ModTerrainMaterials;
 import io.github.rehtea.syncope.impl.DreamLayers;
-import io.github.rehtea.syncope.impl.ModBlocks;
+import io.github.rehtea.syncope.impl.block.DesyncopatorBlock;
+import io.github.rehtea.syncope.impl.block.ModBlocks;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.MaterialPalette;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
@@ -282,8 +281,14 @@ public class ModClient implements ClientModInitializer {
 			if (hitResult.getType() == HitResult.Type.BLOCK) {
 				BlockHitResult blockHitResult = (BlockHitResult) hitResult;
 				BlockPos blockPos = blockHitResult.getBlockPos();
+				boolean isDesyncopator = client.level.getBlockState(blockPos).getBlock() instanceof DesyncopatorBlock;
 
-				if (client.level.getBlockState(blockPos).is(ModBlocks.DESYNCOPATOR.block()) || client.level.getBlockState(blockPos).is(ModBlocks.INVERTED_DESYNCOPATOR.block())) {
+				if (!isDesyncopator) {
+					blockPos = blockPos.relative(blockHitResult.getDirection().getOpposite());
+					isDesyncopator = client.level.getBlockState(blockPos).getBlock() instanceof DesyncopatorBlock;
+				}
+
+				if (isDesyncopator) {
 					ClientPlayNetworking.send(new ServerboundPulsePayload(blockPos));
 				}
 			}

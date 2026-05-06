@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 
-import io.github.rehtea.syncope.impl.ModBlocks;
+import io.github.rehtea.syncope.impl.block.ModBlocks;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 
 public final class ModItems {

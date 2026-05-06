@@ -9,6 +9,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
+import io.github.rehtea.syncope.impl.block.ModBlocks;
 import io.github.rehtea.syncope.impl.item.ModItems;
 import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
 import io.github.rehtea.syncope.impl.network.ModNetworking;

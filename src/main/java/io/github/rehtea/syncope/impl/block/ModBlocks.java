@@ -1,4 +1,4 @@
-package io.github.rehtea.syncope.impl;
+package io.github.rehtea.syncope.impl.block;
 
 import java.util.function.Function;
 
@@ -14,6 +14,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PoweredBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+
+import io.github.rehtea.syncope.impl.Mod;
 
 public final class ModBlocks {
 	public static final BlockWithItem SYNCOPATOR = register(
@@ -34,7 +36,7 @@ public final class ModBlocks {
 	);
 	public static final BlockWithItem DESYNCOPATOR = register(
 			"desyncopator",
-			PoweredBlock::new,
+			DesyncopatorBlock::new,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
 					.mapColor(MapColor.COLOR_BLACK)
 					.lightLevel(_ -> 15),
@@ -42,7 +44,7 @@ public final class ModBlocks {
 	);
 	public static final BlockWithItem INVERTED_DESYNCOPATOR = register(
 			"inverted_desyncopator",
-			PoweredBlock::new,
+			DesyncopatorBlock::new,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
 					.mapColor(MapColor.COLOR_LIGHT_GRAY)
 					.lightLevel(_ -> 15),

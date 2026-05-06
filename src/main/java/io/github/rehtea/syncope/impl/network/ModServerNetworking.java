@@ -1,11 +1,19 @@
 package io.github.rehtea.syncope.impl.network;
 
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.nucleoid.fantasy.RuntimeLevelHandle;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -13,15 +21,20 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RepeaterBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import io.github.rehtea.syncope.impl.DreamLayers;
+import io.github.rehtea.syncope.impl.Mod;
 import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
+import io.github.rehtea.syncope.impl.block.DesyncopatorBlock;
 import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundDreamLayerChangePayload;
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundFaintPayload;
@@ -29,6 +42,8 @@ import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPaletteMater
 import io.github.rehtea.syncope.impl.network.serverbound.ServerboundPulsePayload;
 
 public final class ModServerNetworking {
+//	private static final Map<Block5dPos, Instant> PULSE_TIMERS = new ConcurrentHashMap<>();
+
 	private ModServerNetworking() {
 	}
 
@@ -129,15 +144,34 @@ public final class ModServerNetworking {
 			ServerLevel level = player.level();
 
 			BlockState state = level.getBlockState(payload.pos());
-			BlockHitResult hitResult = new BlockHitResult(player.position(), Direction.NORTH, payload.pos(), false);
-			InteractionResult interactionResult = state.useWithoutItem(level, player, hitResult);
 
-			if (!interactionResult.consumesAction()) {
-				if (interactionResult != InteractionResult.PASS) {
-					UseOnContext useOnContext = new UseOnContext(player, player.getUsedItemHand(), hitResult);
-					player.getItemInHand(player.getUsedItemHand()).useOn(useOnContext);
-				}
+			if (state.getBlock() instanceof DesyncopatorBlock block) {
+				block.setPowered(true, payload.pos(), state, level);
+//				PULSE_TIMERS.put(new Block5dPos(player.level().dimension(), payload.pos()), Instant.now().plusMillis(750));
 			}
 		});
+//
+//		ServerTickEvents.START_LEVEL_TICK.register(level -> {
+//			for (Map.Entry<Block5dPos, Instant> entry : PULSE_TIMERS.entrySet()) {
+//				BlockPos pos = entry.getKey().pos();
+//				BlockState state = Objects.requireNonNull(level
+//								.getServer()
+//								.getLevel(entry.getKey().dimension()))
+//						.getBlockState(pos);
+//
+//				if (entry.getValue().isBefore(Instant.now())) {
+//					if (state.getBlock() instanceof DesyncopatorBlock block) {
+//						block.setPowered(false, pos, state, level);
+//					} else {
+//						Mod.LOGGER.warn("Non-desyncopator attempted to unpower @ {}", pos);
+//					}
+//
+//					PULSE_TIMERS.remove(entry.getKey());
+//				}
+//			}
+//		});
+	}
+
+	public record Block5dPos(ResourceKey<Level> dimension, BlockPos pos) {
 	}
 }
