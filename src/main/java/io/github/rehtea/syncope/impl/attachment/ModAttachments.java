@@ -15,6 +15,8 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
+import io.github.rehtea.syncope.impl.layer.DreamLayer;
+
 public final class ModAttachments {
 	public static final AttachmentType<Int2ObjectMap<MaterialPalette>> MATERIAL_PALETTE = register(
 			"material_palette",
@@ -43,7 +45,7 @@ public final class ModAttachments {
 	);
 
 	public static final AttachmentType<DreamLayer> DREAM_LAYER = register(
-			"dream_node",
+			"dream_layer",
 			builder -> builder
 					.persistent(DreamLayer.CODEC)
 					.syncWith(DreamLayer.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())

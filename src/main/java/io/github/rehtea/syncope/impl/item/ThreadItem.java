@@ -7,8 +7,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import io.github.rehtea.syncope.impl.attachment.DreamLayer;
 import io.github.rehtea.syncope.impl.attachment.ModAttachments;
+import io.github.rehtea.syncope.impl.layer.DreamLayer;
 
 public class ThreadItem extends Item {
 	public ThreadItem(Properties properties) {

@@ -18,10 +18,12 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.gamerules.GameRules;
 
+import io.github.rehtea.syncope.impl.layer.DreamLayers;
+
 /// only if the serveur is on here we are.
 public final class ModServer {
 	static final Map<String, RuntimeLevelConfig> CONFIGS = new HashMap<>();
-	static final Map<String, RuntimeLevelHandle> HANDLES = new HashMap<>();
+	public static final Map<String, RuntimeLevelHandle> HANDLES = new HashMap<>();
 
 	private ModServer() {
 	}

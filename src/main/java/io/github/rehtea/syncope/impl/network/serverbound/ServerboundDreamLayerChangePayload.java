@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 
 import io.github.rehtea.syncope.impl.Mod;
 import io.github.rehtea.syncope.impl.StreamCodecs;
-import io.github.rehtea.syncope.impl.attachment.DreamLayer;
+import io.github.rehtea.syncope.impl.layer.DreamLayer;
 
 public record ServerboundDreamLayerChangePayload(int slot, DreamLayer layer) implements CustomPacketPayload {
 	public static final Identifier IDENTIFIER = Mod.id("dream_layer_change");

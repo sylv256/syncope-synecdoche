@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 
 import io.github.rehtea.syncope.impl.block.ModBlocks;
-import io.github.rehtea.syncope.impl.attachment.DreamLayer;
+import io.github.rehtea.syncope.impl.layer.DreamLayer;
 
 public final class ModItems {
 	public static final Item PALETTE = register("palette", PaletteItem::new, new Item.Properties());

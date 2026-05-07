@@ -14,5 +14,6 @@
 	"syncope-synecdoche.dream_layer.similitude": "Similitude",
 	"syncope-synecdoche.dream_layer.limbo": "Limbo",
 	"syncope-synecdoche.dream_layer.lucidity": "Lucidity",
-	"creativeTab.syncope-synecdoche": "Syncope Synecdoche"
+	"creativeTab.syncope-synecdoche": "Syncope Synecdoche",
+	"argument.syncope-synecdoche.enum.invalid": "Invalid value for %2$s: %1$s"
 }
