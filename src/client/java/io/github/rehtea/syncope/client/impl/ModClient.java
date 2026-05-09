@@ -38,10 +38,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 
-import gay.sylv.frappe.api.ext.quad_view.FrappeMutableQuadView;
-import gay.sylv.frappe.api.ext.terrain_material.MQV_ExtTerrainMaterial;
-import gay.sylv.frappe.api.ext.terrain_material.TerrainMaterial;
-
 import io.github.rehtea.syncope.client.impl.event.ClientItemScrollEvents;
 import io.github.rehtea.syncope.client.impl.mixin.Accessor_RenderSectionRegion;
 import io.github.rehtea.syncope.client.impl.network.ModClientNetworking;
@@ -141,14 +137,6 @@ public class ModClient implements ClientModInitializer {
 								return;
 							}
 
-							TerrainMaterial material = Objects.requireNonNull(ModTerrainMaterials.MATERIAL_MAP.get(modTerrainMaterial.identifier()), "Terrain Material " + modTerrainMaterial.identifier() + " is unregistered on the client");
-
-							emitter.pushTransform(quad -> {
-								FrappeMutableQuadView.of(quad)
-										.as(MQV_ExtTerrainMaterial.class)
-										.frappe$terrainMaterial(material);
-								return true;
-							});
 							super.emitQuads(emitter, level, pos, state, random, cullTest);
 							emitter.popTransform();
 						}

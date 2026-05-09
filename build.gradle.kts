@@ -70,9 +70,9 @@ dependencies {
 
 	// Libraries
 	implementation(libs.fabric.api)
-	api(libs.frappe.ext.terrain.material)
-	include(libs.frappe.asProvider())
-	runtimeOnly(libs.frappe.asProvider())
+//	api(libs.frappe.ext.terrain.material)
+//	include(libs.frappe.asProvider())
+//	runtimeOnly(libs.frappe.asProvider())
 	implementationInclude(libs.fantasy)
 
 	// Mod Integrations

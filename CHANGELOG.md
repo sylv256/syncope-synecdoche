@@ -1,4 +1,2 @@
 ## Fixes
- - Music playing
- - Commands working
- - Include Frappé correctly.
+ - Don't use Frappé for now

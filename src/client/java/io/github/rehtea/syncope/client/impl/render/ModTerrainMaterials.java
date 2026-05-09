@@ -9,49 +9,43 @@ import java.util.Map;
 
 import net.minecraft.resources.Identifier;
 
-import gay.sylv.frappe.api.ext.terrain_material.TerrainMaterial;
-import gay.sylv.frappe.api.ext.terrain_material.TerrainMaterialExtension;
-import gay.sylv.frappe.api.ext.terrain_material.TerrainMaterialRegistryEntrypoint;
-
-import io.github.rehtea.syncope.impl.item.component.ModTerrainMaterial;
-
-public final class ModTerrainMaterials implements TerrainMaterialRegistryEntrypoint {
-	public static final TerrainMaterial DESTABILIZE = TerrainMaterial.Builder.of(id("destabilize"))
-			.complexity(TerrainMaterial.Complexity.SIMPLE)
-			.label("Destabilized Reality")
-			.build();
-	public static final TerrainMaterial DISINTEGRATE = TerrainMaterial.Builder.of(id("disintegrate"))
-			.complexity(TerrainMaterial.Complexity.SIMPLE)
-			.label("Disintegrating Reality")
-			.build();
-	public static final TerrainMaterial SYNCOPATE = TerrainMaterial.Builder.of(id("syncopate"))
-			.complexity(TerrainMaterial.Complexity.SIMPLE)
-			.label("Syncopating Reality")
-			.build();
-	public static final Map<Identifier, TerrainMaterial> MATERIAL_MAP = new HashMap<>();
+public final class ModTerrainMaterials {
+//	public static final TerrainMaterial DESTABILIZE = TerrainMaterial.Builder.of(id("destabilize"))
+//			.complexity(TerrainMaterial.Complexity.SIMPLE)
+//			.label("Destabilized Reality")
+//			.build();
+//	public static final TerrainMaterial DISINTEGRATE = TerrainMaterial.Builder.of(id("disintegrate"))
+//			.complexity(TerrainMaterial.Complexity.SIMPLE)
+//			.label("Disintegrating Reality")
+//			.build();
+//	public static final TerrainMaterial SYNCOPATE = TerrainMaterial.Builder.of(id("syncopate"))
+//			.complexity(TerrainMaterial.Complexity.SIMPLE)
+//			.label("Syncopating Reality")
+//			.build();
+//	public static final Map<Identifier, TerrainMaterial> MATERIAL_MAP = new HashMap<>();
 	public static final List<Identifier> IDENTIFIERS = new ArrayList<>();
 
-	@Override
-	public void onTerrainMaterialRegistry() {
-		try {
+//	@Override
+//	public void onTerrainMaterialRegistry() {
+//		try {
 			// TODO: add a TerrainMaterialExtension#getDefault()TerrainMaterial method
-			TerrainMaterial[] terrainMaterials = (TerrainMaterial[]) Class
-					.forName("gay.sylv.frappe.mocha.impl.indigo.MochaIndigoEncodingFormat")
-					.getDeclaredField("TERRAIN_MATERIALS").get(null);
-			register(ModTerrainMaterial.DEFAULT, terrainMaterials[0]);
-		} catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
+//			TerrainMaterial[] terrainMaterials = (TerrainMaterial[]) Class
+//					.forName("gay.sylv.frappe.mocha.impl.indigo.MochaIndigoEncodingFormat")
+//					.getDeclaredField("TERRAIN_MATERIALS").get(null);
+//			register(ModTerrainMaterial.DEFAULT, terrainMaterials[0]);
+//		} catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+//			throw new RuntimeException(e);
+//		}
 
-		register(ModTerrainMaterial.DESTABILIZE, DESTABILIZE);
-		register(ModTerrainMaterial.DISINTEGRATE, DISINTEGRATE);
-		register(ModTerrainMaterial.SYNCOPATE, SYNCOPATE);
-	}
+//		register(ModTerrainMaterial.DESTABILIZE, DESTABILIZE);
+//		register(ModTerrainMaterial.DISINTEGRATE, DISINTEGRATE);
+//		register(ModTerrainMaterial.SYNCOPATE, SYNCOPATE);
+//	}
 
-	private static void register(ModTerrainMaterial modTerrainMaterial, TerrainMaterial material) {
-		Identifier identifier = modTerrainMaterial.identifier();
-		MATERIAL_MAP.put(identifier, material);
-		IDENTIFIERS.add(identifier);
-		TerrainMaterialExtension.registerMaterial(material);
-	}
+//	private static void register(ModTerrainMaterial modTerrainMaterial, TerrainMaterial material) {
+//		Identifier identifier = modTerrainMaterial.identifier();
+////		MATERIAL_MAP.put(identifier, material);
+//		IDENTIFIERS.add(identifier);
+////		TerrainMaterialExtension.registerMaterial(material);
+//	}
 }
