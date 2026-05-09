@@ -3,9 +3,11 @@
 	"id": "syncope-synecdoche",
 	"version": "${version}",
 	"name": "Syncope Synecdoche",
-	"description": "ephemeral ontology",
+	"description": "a faint parallel",
 	"authors": [
-		"rehteA"
+		"rehteA",
+		"Sylv <contact@sylv.gay>",
+		"soileH"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
