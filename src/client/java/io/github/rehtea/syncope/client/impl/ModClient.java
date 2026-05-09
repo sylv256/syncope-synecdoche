@@ -289,12 +289,19 @@ public class ModClient implements ClientModInitializer {
 			MusicManager manager = client.getMusicManager();
 			MusicStage attached = client.player.getAttached(ModAttachments.MUSIC_STAGE);
 			Music music = ModMusics.STAGE_2_MUSIC.get(attached);
+
+			if (music == null || attached == null || attached.equals(MusicStage.NONE)) {
+				return;
+			}
+
 			boolean notPlayingCurrent = !manager.isPlayingMusic(music);
 
-			if (attached != null && notPlayingCurrent && manager.getCurrentMusicTranslationKey() == null) {
+			if (notPlayingCurrent && manager.getCurrentMusicTranslationKey() == null) {
 				if (playDistance == null && !attached.loop) {
 					playDistance = Instant.now().plusSeconds(160);
 				}
+
+				manager.stopPlaying();
 
 				if (playDistance == null || Instant.now().isAfter(playDistance)) {
 					playDistance = null;
@@ -309,6 +316,7 @@ public class ModClient implements ClientModInitializer {
 		});
 
 		ModClientNetworking.initialize();
+		ModMusics.initialize();
 	}
 
 	public static void faint() {

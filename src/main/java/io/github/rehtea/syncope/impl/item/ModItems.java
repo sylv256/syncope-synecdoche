@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 
 import io.github.rehtea.syncope.impl.block.ModBlocks;
 import io.github.rehtea.syncope.impl.layer.DreamLayer;
+import io.github.rehtea.syncope.impl.layer.DreamLayers;
 
 public final class ModItems {
 	public static final Item PALETTE = register("palette", PaletteItem::new, new Item.Properties());
@@ -40,7 +41,7 @@ public final class ModItems {
 			.build();
 
 	public static void initialize() {
-		DreamLayer.initialize();
+		DreamLayers.initialize();
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id(MOD_ID), TAB);
 	}
 

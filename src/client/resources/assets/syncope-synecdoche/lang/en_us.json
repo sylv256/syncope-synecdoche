@@ -14,6 +14,14 @@
 	"syncope-synecdoche.dream_layer.similitude": "Similitude",
 	"syncope-synecdoche.dream_layer.limbo": "Limbo",
 	"syncope-synecdoche.dream_layer.lucidity": "Lucidity",
+	"syncope-synecdoche.music.as_is_and_as_was_before": "soleiH - as is and as was before",
+	"syncope-synecdoche.music.horizontal_hourglass": "soleiH - Horizontal Hourglass",
+	"syncope-synecdoche.music.as_is_and_as_was_before_stereo_loop": "soileH - as is and as was before",
+	"syncope-synecdoche.music.horizontal_hourglass_stereo_loop": "soileH - Horizontal Hourglass",
+	"syncope-synecdoche.music.as_is_and_as_was_before_stereo": "soileH - as is and as was before",
+	"syncope-synecdoche.music.horizontal_hourglass_stereo": "soileH - Horizontal Hourglass",
+	"syncope-synecdoche.music.as_is_and_as_was_before_mono": "soileH - as is and as was before",
+	"syncope-synecdoche.music.horizontal_hourglass_mono": "soileH - Horizontal Hourglass",
 	"creativeTab.syncope-synecdoche": "Syncope Synecdoche",
 	"argument.syncope-synecdoche.enum.invalid": "Invalid value for %2$s: %1$s"
 }

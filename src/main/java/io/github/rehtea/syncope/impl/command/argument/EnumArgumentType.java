@@ -25,6 +25,15 @@ public final class EnumArgumentType<T extends Enum<T> & StringRepresentable> imp
 					(Object[]) arg
 			)
 	);
+
+	public Class<T> getClazz() {
+		return clazz;
+	}
+
+	public Map<String, T> getName2Value() {
+		return name2Value;
+	}
+
 	private final Class<T> clazz;
 	private final Map<String, T> name2Value;
 
@@ -45,6 +54,11 @@ public final class EnumArgumentType<T extends Enum<T> & StringRepresentable> imp
 		//noinspection unchecked // Unchecked but safe Class<?> cast
 		return (EnumArgumentType<T>)
 				CACHE.computeIfAbsent(clazz, key -> new EnumArgumentType<>((Class<T>) key));
+	}
+
+	static <T extends Enum<T> & StringRepresentable> EnumArgumentType<T> ofUnsafe(Class<?> clazz) {
+		//noinspection unchecked // Unchecked and unsafe Class<?> cast
+		return of((Class<T>) clazz);
 	}
 
 	@Override

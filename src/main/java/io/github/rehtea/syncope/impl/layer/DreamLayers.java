@@ -22,9 +22,13 @@ public final class DreamLayers {
 	public static final DreamLayer SIMILITUDE = DreamLayer.SIMILITUDE;
 	public static final DreamLayer LIMBO = DreamLayer.LIMBO;
 	public static final DreamLayer LUCIDITY = DreamLayer.LUCIDITY;
-	public static final List<DreamLayer> PATH = List.of(DreamLayer.values());
+	public static final List<DreamLayer> PATH = List.of(DreamLayer.SYNECDOCHE, DreamLayer.SYNCOPE, DreamLayer.SIMILITUDE, DreamLayer.LIMBO, DreamLayer.LUCIDITY);
 
 	private DreamLayers() {
+	}
+
+	public static void initialize() {
+		DreamLayer.initialize();
 	}
 
 	public static RuntimeLevelHandle getHandle(DreamLayer layer) {
