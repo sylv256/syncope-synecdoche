@@ -69,6 +69,7 @@ public class ModClient implements ClientModInitializer {
 	public static Instant desyncopationDistance = Instant.now();
 	public static final ScopedValue<RenderTarget> SYNCOPE_RENDER_TARGET = ScopedValue.newInstance();
 	public static @Nullable RenderTarget renderTarget;
+	public static boolean shutUpStopTalkingForSixHours = false;
 
 	public static int getAlpha() {
 		if (fainted == null) {
@@ -292,6 +293,7 @@ public class ModClient implements ClientModInitializer {
 
 			if (attached != null && attached.equals(MusicStage.NONE)) {
 				playDistance = null;
+				shutUpStopTalkingForSixHours = false;
 
 				for (MusicStage stage : MusicStage.values()) {
 					Music music1 = ModMusics.STAGE_2_MUSIC.get(stage);
@@ -314,9 +316,11 @@ public class ModClient implements ClientModInitializer {
 				}
 
 				manager.stopPlaying();
+				shutUpStopTalkingForSixHours = true;
 
 				if (playDistance == null || Instant.now().isAfter(playDistance)) {
 					playDistance = null;
+					shutUpStopTalkingForSixHours = false;
 					manager.startPlaying(music);
 				}
 			}

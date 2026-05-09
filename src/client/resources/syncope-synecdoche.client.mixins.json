@@ -9,7 +9,8 @@
 		"Mixin_Minecraft",
 		"Mixin_PostPass",
 		"MouseHandlerMixin",
-		"Mixin_PostChain"
+		"Mixin_PostChain",
+		"Mixin_MusicManager"
 	],
 	"injectors": {
 		"defaultRequire": 1
