@@ -290,13 +290,25 @@ public class ModClient implements ClientModInitializer {
 			MusicStage attached = client.player.getAttached(ModAttachments.MUSIC_STAGE);
 			Music music = ModMusics.STAGE_2_MUSIC.get(attached);
 
+			if (attached != null && attached.equals(MusicStage.NONE)) {
+				playDistance = null;
+
+				for (MusicStage stage : MusicStage.values()) {
+					Music music1 = ModMusics.STAGE_2_MUSIC.get(stage);
+
+					if (music1 != null && manager.isPlayingMusic(music1)) {
+						manager.stopPlaying();
+					}
+				}
+			}
+
 			if (music == null || attached == null || attached.equals(MusicStage.NONE)) {
 				return;
 			}
 
 			boolean notPlayingCurrent = !manager.isPlayingMusic(music);
 
-			if (notPlayingCurrent && manager.getCurrentMusicTranslationKey() == null) {
+			if (notPlayingCurrent) {
 				if (playDistance == null && !attached.loop) {
 					playDistance = Instant.now().plusSeconds(160);
 				}
