@@ -1,2 +1,2 @@
 ## Fixes
- - Don't use Frappé for now
+ - Incorrect/long wait for songs

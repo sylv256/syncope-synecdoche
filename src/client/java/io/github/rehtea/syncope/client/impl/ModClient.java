@@ -300,7 +300,7 @@ public class ModClient implements ClientModInitializer {
 
 			if (notPlayingCurrent) {
 				if (playDistance == null && !attached.loop) {
-					playDistance = Instant.now().plusSeconds(160);
+					playDistance = Instant.now().plusSeconds(75);
 				}
 
 				manager.stopPlaying();
